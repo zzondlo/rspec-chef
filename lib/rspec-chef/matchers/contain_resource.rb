@@ -9,9 +9,6 @@ module RSpec
       end
 
       class ContainResource
-        WITH_PATTERN    = /^with_(.+)/
-        WITHOUT_PATTERN = /^without_(.+)/
-
         def initialize(type, *args, &block)
           @type                  = type.to_s[CONTAIN_PATTERN, 1]
           @name                  = args.shift
@@ -43,7 +40,7 @@ module RSpec
             end
           end
 
-          @unexpected_attributes.each do |attr|
+          @unexpected_attributes.flatten.each do |attr|
             unless (real_value = resource.send(attr.to_sym)) == nil
               @errors << "#{attr} expected to be nil but it is #{real_value}"
               matches = false
@@ -65,16 +62,14 @@ module RSpec
           @errors.empty? ? "" : " with #{@errors.join(', and ')}"
         end
 
-        def method_missing(method, *args, &block)
-          if attribute = method.to_s[WITH_PATTERN, 1]
-            @expected_attributes[attribute] = args.shift
-            self
-          elsif attribute = method.to_s[WITHOUT_PATTERN, 1]
-            @unexpected_attributes << attribute
-            self
-          else
-            super
-          end
+        def with(attribute, value)
+          @expected_attributes[attribute] = value
+          self
+        end
+
+        def without(*attributes)
+          @unexpected_attributes << attributes
+          self
         end
       end
     end

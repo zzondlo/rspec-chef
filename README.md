@@ -61,10 +61,16 @@ It can take the parameters that the resource takes:
   it { should contain_remote_file('/etc/chef/dna.json', {:action => :nothing}) }
 ```
 
-Use the chain `with_<attr_name>` to test the further attributes that the resource gets:
+Use the chained method `with` to test the further attributes that the resource gets:
 
 ```ruby
-  it { should contain_remote_file('/etc/chef/dna.json').with_source('dna.json.erb') }
+  it { should contain_remote_file('/etc/chef/dna.json').with(:source, 'dna.json.erb') }
+```
+
+Use the chained method `without` to the the resource doesn't get further unexpected attributes:
+
+```ruby
+  it { should contain_remote_file('/etc/chef/dna.json').without(:owner, :group) }
 ```
 
 ## Settings

@@ -57,28 +57,35 @@ describe RSpec::Chef::Matchers::ContainResource do
 
     it "matches a resource with expected attributes" do
       recipe = MockRecipe.new('remote_file[foo]' => MockResource.new({}, {:version => '0.1'}))
-      matcher = described_class.new(:contain_remote_file, :foo).with_version('0.1')
+      matcher = described_class.new(:contain_remote_file, :foo).with(:version, '0.1')
 
       matcher.matches?(recipe).should be_true
     end
 
     it "doesn't match a resource which expected attributes don't match" do
       recipe = MockRecipe.new('remote_file[foo]' => MockResource.new({}, {:version => '0.1'}))
-      matcher = described_class.new(:contain_remote_file, :foo).with_version('1.1')
+      matcher = described_class.new(:contain_remote_file, :foo).with(:version, '1.1')
 
       matcher.matches?(recipe).should be_false
     end
 
     it "matches a resource without unexpected attributes" do
       recipe = MockRecipe.new('remote_file[foo]' => MockResource.new)
-      matcher = described_class.new(:contain_remote_file, :foo).without_version
+      matcher = described_class.new(:contain_remote_file, :foo).without(:version)
+
+      matcher.matches?(recipe).should be_true
+    end
+
+    it "mathes a resource without several unexpected attributes" do
+      recipe = MockRecipe.new('remote_file[foo]' => MockResource.new)
+      matcher = described_class.new(:contain_remote_file, :foo).without(:version, :notif)
 
       matcher.matches?(recipe).should be_true
     end
 
     it "doesn't match a resource with unexpected attributes" do
       recipe = MockRecipe.new('remote_file[foo]' => MockResource.new({}, {:version => '0.1'}))
-      matcher = described_class.new(:contain_remote_file, :foo).without_version
+      matcher = described_class.new(:contain_remote_file, :foo).without(:version)
 
       matcher.matches?(recipe).should be_false
     end
