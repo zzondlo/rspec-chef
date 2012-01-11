@@ -89,7 +89,7 @@ Or it can be set as a global RSpec setting:
 
 ```ruby
 RSpec.configure do |c|
-  c.cookbook_path File.expand_path('../cookbooks', __FILE__)
+  c.cookbook_path = File.expand_path('../cookbooks', __FILE__)
 end
 ```
 
@@ -123,6 +123,6 @@ The JSON attributes can alson be set as a global RSpec setting:
 
 ```ruby
 RSpec.configure do |c|
-  c.json_attributes {}
+  c.json_attributes = {:foo => :bar}
 end
 ```
